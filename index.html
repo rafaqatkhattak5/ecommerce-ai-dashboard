@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShopSense AI | Order Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#0a0f1f;--bg2:#1b1245;--glow1:#5b3fe066;--glow2:#06b6d444;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.12);--text:#eef1ff;--muted:#9aa4c7;--input:rgba(255,255,255,.07);--opt:#151a33;--accent:#7c5cff;--accent2:#22d3ee;--low:#22c55e;--med:#f59e0b;--high:#ef4444;--track:rgba(255,255,255,.12)}
+[data-theme=light]{--bg1:#eef1ff;--bg2:#e0e7ff;--glow1:#7c5cff33;--glow2:#22d3ee33;--card:rgba(255,255,255,.75);--border:rgba(30,40,100,.14);--text:#12163a;--muted:#5b6490;--input:#fff;--opt:#fff;--track:rgba(30,40,100,.12)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--text);min-height:100vh;
+background:radial-gradient(1100px 600px at 8% -10%,var(--glow1),transparent),radial-gradient(900px 500px at 100% 0%,var(--glow2),transparent),linear-gradient(160deg,var(--bg1),var(--bg2));background-attachment:fixed}
+.wrap{max-width:1180px;margin:auto;padding:18px 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 26px #7c5cff55}
+h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.02em}
+.sub{font-size:12px;color:var(--muted);margin-top:2px}
+.actions{display:flex;gap:8px}
+.icon-btn{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:12px;padding:9px 12px;font:600 13px Inter;cursor:pointer;text-decoration:none;backdrop-filter:blur(10px)}
+.icon-btn:hover{border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:20px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 12px 40px rgba(0,0,0,.22)}
+.sticky{position:sticky;top:16px}
+.sec{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 12px}
+.sec:not(:first-child){margin-top:22px}
+.sec:after{content:"";flex:1;height:1px;background:var(--border)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--border);background:var(--input);color:var(--text);font:500 14px Inter,sans-serif;outline:none;transition:.2s}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c5cff33}
+select option{background:var(--opt);color:var(--text)}
+input[type=range]{padding:0;height:34px;accent-color:var(--accent);background:transparent;border:0}
+.range-row{display:flex;align-items:center;gap:12px}
+.range-val{min-width:48px;text-align:right;font-weight:700;color:var(--accent2)}
+.seg{display:flex;background:var(--input);border:1px solid var(--border);border-radius:12px;padding:3px}
+.seg button{flex:1;border:0;background:transparent;color:var(--muted);padding:8px;border-radius:9px;font:600 13px Inter;cursor:pointer;transition:.2s}
+.seg button.on{background:linear-gradient(135deg,var(--accent),#5b8cff);color:#fff;box-shadow:0 4px 14px #7c5cff55}
+.stars{display:flex;gap:2px}
+.stars button{background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:#4b5573;padding:2px;transition:.15s}
+.stars button.on{color:#fbbf24;text-shadow:0 0 14px #fbbf2477}
+.stars button:hover{transform:scale(1.15)}
+.cart{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:14px;background:#7c5cff1f;border:1px dashed #7c5cff77;font-size:13px;color:var(--muted)}
+.cart b{font-size:18px;color:var(--text)}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 12px}
+.chip{border:1px solid var(--border);background:var(--input);color:var(--text);border-radius:999px;padding:8px 14px;font:600 12px Inter;cursor:pointer;transition:.2s}
+.chip:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.go{width:100%;border:0;border-radius:16px;padding:16px;font:800 16px Inter;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--accent),#4f7bff 55%,var(--accent2));box-shadow:0 12px 30px #6d5cff55;transition:.2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.go:hover{transform:translateY(-2px);box-shadow:0 16px 36px #6d5cff77}
+.go:disabled{opacity:.65;cursor:wait;transform:none}
+.spin{width:18px;height:18px;border:3px solid #ffffff55;border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:none}
+.go:disabled .spin{display:block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:46px 12px;color:var(--muted)}
+.empty .big{font-size:54px;margin-bottom:10px}
+.hidden{display:none!important}
+#result.lv-low{--lv:var(--low)}#result.lv-medium{--lv:var(--med)}#result.lv-high{--lv:var(--high)}
+.gauge{position:relative;max-width:300px;margin:0 auto}
+.gauge svg{width:100%;display:block}
+.g-track,.g-fill{fill:none;stroke-width:16;stroke-linecap:round}
+.g-track{stroke:var(--track)}
+.g-fill{stroke:var(--lv);transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 8px var(--lv))}
+.g-center{position:absolute;left:0;right:0;bottom:2px;text-align:center}
+.pct{font-size:40px;font-weight:800;letter-spacing:-.03em}
+.pct-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.g-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);max-width:300px;margin:2px auto 0;padding:0 14px}
+.badge-row{text-align:center;margin:14px 0 4px}
+.badge{display:inline-block;padding:7px 16px;border-radius:999px;font-weight:800;font-size:13px;color:var(--lv);background:color-mix(in srgb,var(--lv) 16%,transparent);border:1px solid color-mix(in srgb,var(--lv) 45%,transparent)}
+.vs{text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--input);border:1px solid var(--border);border-radius:16px;padding:12px 14px}
+.kpi span{font-size:11px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-size:22px;margin:4px 0 2px;letter-spacing:-.02em}
+.kpi small{font-size:10.5px;color:var(--muted)}
+.advice{padding:12px 14px;border-radius:14px;border-left:4px solid var(--lv);background:color-mix(in srgb,var(--lv) 10%,transparent);font-size:13.5px;font-weight:500;margin-bottom:14px}
+.h2{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+ul.list{list-style:none;margin:0;padding:0}
+ul.list li{display:flex;gap:10px;align-items:flex-start;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border)}
+ul.list li:last-child{border:0}
+.dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none}
+.dot.bad{background:var(--high);box-shadow:0 0 8px var(--high)}.dot.good{background:var(--low);box-shadow:0 0 8px var(--low)}.dot.info{background:var(--accent2);box-shadow:0 0 8px var(--accent2)}
+.hist li{justify-content:space-between;align-items:center}
+.hist .tag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+.tag.low{background:#22c55e22;color:#4ade80}.tag.medium{background:#f59e0b22;color:#fbbf24}.tag.high{background:#ef444422;color:#f87171}
+.row-btns{display:flex;gap:8px;margin-top:14px}
+.row-btns .chip{flex:1;text-align:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:#ef4444;color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:13px;opacity:0;pointer-events:none;transition:.3s;max-width:90vw;z-index:50}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.ok{background:#16a34a}
+footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">🛒</div>
+      <div><h1>ShopSense AI</h1><div class="sub">Order value &amp; return-risk intelligence</div></div>
+    </div>
+    <div class="actions">
+      <a class="icon-btn" href="/docs" target="_blank">API Docs</a>
+      <button class="icon-btn" id="themeBtn" type="button">🌙</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- FORM -->
+    <section class="card">
+      <div class="sec">👤 Customer</div>
+      <div class="fields">
+        <div><label for="customer_age">Age</label><input id="customer_age" type="number" min="18" max="80"></div>
+        <div><label for="gender">Gender</label><select id="gender"></select></div>
+        <div><label for="city">City</label><select id="city"></select></div>
+        <div><label for="previous_orders">Previous orders</label><input id="previous_orders" type="number" min="0" max="100"></div>
+        <div class="full"><label>Membership</label>
+          <div class="seg" id="memberSeg"><button type="button" data-v="0">Non-member</button><button type="button" data-v="1">Member</button></div>
+        </div>
+      </div>
+
+      <div class="sec">🛍️ Product &amp; price</div>
+      <div class="fields">
+        <div class="full"><label for="product_category">Category</label><select id="product_category"></select></div>
+        <div><label for="unit_price_usd">Unit price ($)</label><input id="unit_price_usd" type="number" min="1" step="0.01"></div>
+        <div><label for="quantity">Quantity</label><input id="quantity" type="number" min="1" max="20"></div>
+        <div class="full"><label for="discount_pct">Discount</label>
+          <div class="range-row"><input id="discount_pct" type="range" min="0" max="50" step="5"><span class="range-val" id="discVal">0%</span></div>
+        </div>
+        <div class="full"><div class="cart"><span>Cart total (price × qty − discount + shipping)</span><b id="cartTotal">$0.00</b></div></div>
+      </div>
+
+      <div class="sec">🚚 Order &amp; delivery</div>
+      <div class="fields">
+        <div><label for="order_date">Order date</label><input id="order_date" type="date"></div>
+        <div><label for="shipping_fee_usd">Shipping fee ($)</label><input id="shipping_fee_usd" type="number" min="0" max="50" step="0.01"></div>
+        <div><label for="payment_method">Payment</label><select id="payment_method"></select></div>
+        <div><label for="device_type">Device</label><select id="device_type"></select></div>
+        <div><label for="delivery_days">Delivery days</label><input id="delivery_days" type="number" min="1" max="30"></div>
+        <div><label>Customer rating</label><div class="stars" id="stars"></div></div>
+      </div>
+
+      <div class="presets">
+        <button class="chip" type="button" data-preset="safe">✅ Safe order</button>
+        <button class="chip" type="button" data-preset="risky">⚠️ Risky order</button>
+        <button class="chip" type="button" data-preset="random">🎲 Random</button>
+        <button class="chip" type="button" data-preset="reset">↺ Reset</button>
+      </div>
+      <button class="go" id="go" type="button"><span class="spin"></span><span id="goTxt">✨ Analyze order</span></button>
+    </section>
+
+    <!-- RESULT -->
+    <section class="card sticky" id="panel">
+      <div class="empty" id="empty">
+        <div class="big">📊</div>
+        <b>Ready when you are</b>
+        <p style="font-size:13px;margin:6px 0 0">Fill in the order details and tap <b>Analyze order</b> to see the return risk and expected order value.</p>
+      </div>
+
+      <div id="result" class="hidden">
+        <div class="gauge">
+          <svg viewBox="0 0 200 112"><path class="g-track" d="M20 100 A80 80 0 0 1 180 100"/><path class="g-fill" id="gFill" d="M20 100 A80 80 0 0 1 180 100"/></svg>
+          <div class="g-center"><div class="pct" id="pct">0%</div><div class="pct-sub">Return probability</div></div>
+        </div>
+        <div class="g-scale"><span>0%</span><span>50%+</span></div>
+        <div class="badge-row"><span class="badge" id="badge">Low risk</span></div>
+        <div class="vs" id="vs"></div>
+
+        <div class="kpis">
+          <div class="kpi"><span>💰 Expected order value</span><b id="kEst">$0</b><small>AI estimate from customer profile</small></div>
+          <div class="kpi"><span>🧾 Cart total</span><b id="kCart">$0</b><small>Calculated from this order</small></div>
+        </div>
+        <div class="advice" id="advice"></div>
+
+        <div class="h2">Risk signals</div>
+        <ul class="list" id="factors"></ul>
+
+        <div class="h2">Recent analyses</div>
+        <ul class="list hist" id="hist"></ul>
+
+        <div class="row-btns">
+          <button class="chip" type="button" id="copyBtn">📋 Copy JSON</button>
+          <button class="chip" type="button" id="clearBtn">🗑 Clear history</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <footer>Linear Regression (order value) + Logistic Regression (return risk) · FastAPI · Trained on synthetic data for learning</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const L = Math.PI * 80;                       // gauge arc length
+let OPTS = {}, member = 0, rating = 4, last = null, history = [];
+
+const SAFE  = {customer_age:40, gender:"Female", city:"Lahore", previous_orders:8, is_member:1, product_category:"Books",
+               unit_price_usd:18, quantity:2, discount_pct:0, shipping_fee_usd:0.4, payment_method:"Credit Card",
+               device_type:"Desktop", delivery_days:2, customer_rating:5};
+const RISKY = {customer_age:24, gender:"Male", city:"Peshawar", previous_orders:0, is_member:0, product_category:"Electronics",
+               unit_price_usd:320, quantity:1, discount_pct:25, shipping_fee_usd:0.5, payment_method:"Cash on Delivery",
+               device_type:"Mobile", delivery_days:7, customer_rating:2};
+const DEFAULT = {customer_age:30, gender:"Male", city:"Karachi", previous_orders:2, is_member:0, product_category:"Fashion",
+                 unit_price_usd:60, quantity:1, discount_pct:10, shipping_fee_usd:0.5, payment_method:"Cash on Delivery",
+                 device_type:"Mobile", delivery_days:4, customer_rating:4};
+
+const money = n => "$" + Number(n).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+
+function toast(msg, ok) {
+  const t = $("toast");
+  t.textContent = msg; t.className = "toast show" + (ok ? " ok" : "");
+  clearTimeout(toast.id); toast.id = setTimeout(() => t.className = "toast", 3200);
+}
+
+function fillSelect(id, arr) {
+  $(id).innerHTML = "";
+  arr.forEach(v => { const o = document.createElement("option"); o.value = v; o.textContent = v; $(id).appendChild(o); });
+}
+
+function setMember(v) {
+  member = Number(v);
+  document.querySelectorAll("#memberSeg button").forEach(b => b.classList.toggle("on", Number(b.dataset.v) === member));
+}
+function setRating(v) {
+  rating = Number(v);
+  document.querySelectorAll("#stars button").forEach(b => b.classList.toggle("on", Number(b.dataset.v) <= rating));
+}
+function updateDisc() { $("discVal").textContent = $("discount_pct").value + "%"; }
+function updateCart() {
+  const p = Number($("unit_price_usd").value) || 0, q = Number($("quantity").value) || 0;
+  const d = Number($("discount_pct").value) || 0, s = Number($("shipping_fee_usd").value) || 0;
+  $("cartTotal").textContent = money(p * q * (1 - d / 100) + s);
+}
+
+function setValues(v) {
+  Object.keys(v).forEach(k => {
+    if (k === "is_member") setMember(v[k]);
+    else if (k === "customer_rating") setRating(v[k]);
+    else if ($(k)) $(k).value = v[k];
+  });
+  updateDisc(); updateCart();
+}
+
+function today() { return new Date().toISOString().slice(0, 10); }
+
+function applyPreset(name) {
+  if (name === "safe") setValues(Object.assign({order_date: today()}, SAFE));
+  else if (name === "risky") setValues(Object.assign({order_date: today()}, RISKY));
+  else if (name === "reset") setValues(Object.assign({order_date: today()}, DEFAULT));
+  else setValues({
+    order_date: today(), customer_age: rnd(18, 65), gender: pick(OPTS.gender), city: pick(OPTS.city),
+    previous_orders: rnd(0, 12), is_member: rnd(0, 1), product_category: pick(OPTS.product_category),
+    unit_price_usd: rnd(5, 400), quantity: rnd(1, 4), discount_pct: pick([0, 5, 10, 15, 20, 30]),
+    shipping_fee_usd: pick([0, 0.4, 0.5, 0.7, 0.9]), payment_method: pick(OPTS.payment_method),
+    device_type: pick(OPTS.device_type), delivery_days: rnd(1, 9), customer_rating: rnd(1, 5)
+  });
+}
+
+function collect() {
+  const num = id => $(id).value === "" ? NaN : Number($(id).value);
+  const p = {
+    order_date: $("order_date").value, customer_age: num("customer_age"), gender: $("gender").value,
+    city: $("city").value, product_category: $("product_category").value, unit_price_usd: num("unit_price_usd"),
+    quantity: num("quantity"), discount_pct: num("discount_pct"), shipping_fee_usd: num("shipping_fee_usd"),
+    payment_method: $("payment_method").value, device_type: $("device_type").value, is_member: member,
+    previous_orders: num("previous_orders"), delivery_days: num("delivery_days"), customer_rating: rating
+  };
+  const bad = Object.keys(p).filter(k => p[k] === "" || (typeof p[k] === "number" && isNaN(p[k])));
+  return {p, bad};
+}
+
+function countUp(el, to, ms) {
+  const t0 = performance.now();
+  (function step(t) {
+    const k = Math.min((t - t0) / ms, 1), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = (to * e).toFixed(1) + "%";
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+function render(r, p) {
+  last = r;
+  $("empty").classList.add("hidden"); $("result").classList.remove("hidden");
+  $("result").className = "lv-" + r.risk_level;
+
+  const frac = Math.min(r.return_probability / 0.5, 1);
+  const fill = $("gFill");
+  fill.style.transition = "none"; fill.style.strokeDasharray = L; fill.style.strokeDashoffset = L;
+  void fill.getBoundingClientRect();
+  fill.style.transition = ""; fill.style.strokeDashoffset = L * (1 - frac);
+  countUp($("pct"), r.return_probability * 100, 900);
+
+  $("badge").textContent = r.risk_label;
+  const ratio = r.return_probability / r.base_rate;
+  $("vs").textContent = Math.abs((ratio - 1) * 100).toFixed(0) + "% " + (ratio >= 1 ? "above" : "below") +
+                        " the average return rate (" + (r.base_rate * 100).toFixed(1) + "%)";
+  $("kEst").textContent = money(r.expected_order_value);
+  $("kCart").textContent = money(r.cart_total);
+  $("advice").textContent = r.advice;
+
+  const ul = $("factors"); ul.innerHTML = "";
+  r.factors.forEach(f => {
+    const li = document.createElement("li");
+    const d = document.createElement("span"); d.className = "dot " + f.type;
+    const t = document.createElement("span"); t.textContent = f.text;
+    li.appendChild(d); li.appendChild(t); ul.appendChild(li);
+  });
+
+  history.unshift({cat: p.product_category, city: p.city, cart: r.cart_total, prob: r.return_probability, lvl: r.risk_level, label: r.risk_label});
+  history = history.slice(0, 5);
+  renderHistory();
+  if (window.innerWidth <= 900) $("panel").scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+function renderHistory() {
+  const ul = $("hist"); ul.innerHTML = "";
+  history.forEach(h => {
+    const li = document.createElement("li");
+    const a = document.createElement("span");
+    a.textContent = h.cat + " · " + h.city + " · " + money(h.cart);
+    const b = document.createElement("span");
+    b.className = "tag " + h.lvl; b.textContent = (h.prob * 100).toFixed(1) + "% · " + h.label;
+    li.appendChild(a); li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+async function analyze() {
+  const {p, bad} = collect();
+  if (bad.length) { toast("Please fill: " + bad.join(", ").replace(/_/g, " ")); return; }
+  const btn = $("go"); btn.disabled = true; $("goTxt").textContent = "Analyzing...";
+  try {
+    const res = await fetch("/api/predict", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(p)});
+    const data = await res.json();
+    if (!res.ok) {
+      const d = data.detail;
+      throw new Error(Array.isArray(d) ? d.map(e => (e.loc || []).slice(-1)[0] + ": " + e.msg).join("; ") : (d || "Server error"));
+    }
+    render(data, p);
+  } catch (e) {
+    toast("Error: " + e.message);
+  } finally {
+    btn.disabled = false; $("goTxt").textContent = "✨ Analyze order";
+  }
+}
+
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  $("themeBtn").textContent = t === "dark" ? "🌙" : "☀️";
+  try { localStorage.setItem("theme", t); } catch (e) {}
+}
+
+async function init() {
+  let saved = null;
+  try { saved = localStorage.getItem("theme"); } catch (e) {}
+  setTheme(saved || "dark");
+
+  for (let i = 1; i <= 5; i++) {
+    const b = document.createElement("button");
+    b.type = "button"; b.dataset.v = i; b.textContent = "★";
+    b.addEventListener("click", () => setRating(i));
+    $("stars").appendChild(b);
+  }
+  document.querySelectorAll("#memberSeg button").forEach(b => b.addEventListener("click", () => setMember(b.dataset.v)));
+  document.querySelectorAll("[data-preset]").forEach(b => b.addEventListener("click", () => applyPreset(b.dataset.preset)));
+  ["unit_price_usd", "quantity", "shipping_fee_usd"].forEach(id => $(id).addEventListener("input", updateCart));
+  $("discount_pct").addEventListener("input", () => { updateDisc(); updateCart(); });
+  $("go").addEventListener("click", analyze);
+  $("themeBtn").addEventListener("click", () => setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"));
+  $("clearBtn").addEventListener("click", () => { history = []; renderHistory(); toast("History cleared", true); });
+  $("copyBtn").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(JSON.stringify(last, null, 2)); toast("Result copied", true); }
+    catch (e) { toast("Copy not supported in this browser"); }
+  });
+
+  try {
+    OPTS = await (await fetch("/api/options")).json();
+    ["gender", "city", "product_category", "payment_method", "device_type"].forEach(k => fillSelect(k, OPTS[k]));
+    applyPreset("reset");
+  } catch (e) {
+    toast("Could not load options from the server");
+  }
+}
+init();
+
+</script>
+</body>
+</html>
