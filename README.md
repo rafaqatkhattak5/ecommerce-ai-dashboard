@@ -2,12 +2,14 @@
 
 A machine learning web app that predicts **order value** and **return risk** for e-commerce orders.
 
+![ShopSense AI dashboard](Screenshot_20261015-103951.jpg)
+
 ## Features
 - Regression model (Linear Regression): estimates expected order value
 - Classification model (Logistic Regression): predicts the probability an order is returned
 - FastAPI backend with input validation and auto-generated docs (/docs)
-- Modern dark/light dashboard UI with risk gauge, risk signals and analysis history
-
+- Modern dark/light dashboard UI with risk gauge, risk signals and analysis histo
+  
 ## Tech stack
 Python, pandas, scikit-learn, FastAPI, HTML/CSS/JavaScript
 
